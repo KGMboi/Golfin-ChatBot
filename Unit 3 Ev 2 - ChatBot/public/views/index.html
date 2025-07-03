@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Golfin Chat Bot</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+</head>
+<body>
+    <button id="sidebarHamburger" aria-label="Open sidebar">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <div id="sidebarOverlay"></div>
+    <div class="sidebar sidebar-closed">
+        <div class="sidebarHeader">
+            <img src="/images/icon.jpg" class="sidebarLogo" alt="Golfin Logo" />
+            <span class="sidebarTitle">golfin'</span>
+        </div>
+        <div class="sidebarActions">
+            <button id="newChatBtn" title="Start a new chat"><i class="fa fa-plus"></i> New Chat</button>
+            <button id="deleteChatBtn" title="Delete chat history"><i class="fa fa-trash"></i> Delete Chat</button>
+            <button id="saveChatBtn" title="Save current chat"><i class="fa fa-save"></i> Save Chat</button>
+        </div>
+        <div class="sidebarHistory">
+            <span class="sidebarHistoryTitle">History</span>
+            <ul id="chatHistoryList"></ul>
+        </div>
+    </div>
+    <div id="chatbox" class="chat-container">
+        <h1>Welcome User, to Golfin's chatbot</h1>
+        <!-- Here are the bot's messages -->
+        <div id="messages"></div> 
+        <!-- Here is the user's messages input -->
+        <form id="inputArea" autocomplete="off">
+            <input type="text" id="userInput" placeholder="Type your question here..." autocomplete="off" />
+            <button type="submit" id="sendBtn">Send</button>
+        </form>
+    </div>
+    <script src="/js/index.js"></script>
+</body>
+</html>
