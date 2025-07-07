@@ -76,10 +76,26 @@ window.addEventListener('DOMContentLoaded', function() {
 
   function renderMessages() {
     messagesDiv.innerHTML = '';
+    // Here I display the chat history
+    // If the chat is saved, it will show the date and time of the message
+    const isHistory = activeChatIdx !== null;
     chatHistory.forEach(({ text, sender, timestamp, isThinking }) => {
       const div = document.createElement('div');
       div.className = `msg ${sender}`;
-      div.innerHTML = `<span>${text}</span><span class="timestamp">${isThinking ? '' : timestamp}</span>`;
+      if (isHistory && sender === 'user' && !isThinking) {
+        let now = new Date();
+        let dateStr = '';
+        if (timestamp) {
+          let parsed = Date.parse(timestamp);
+          if (!isNaN(parsed)) now = new Date(parsed);
+        }
+        dateStr = `the day ${now.toLocaleDateString()} at ${now.toLocaleTimeString()}`;
+        div.innerHTML = `<span>You asked: <b>${text}</b> ${dateStr}</span><span class="timestamp">${timestamp || ''}</span>`;
+      } else if (isHistory && sender === 'bot' && !isThinking) {
+        div.innerHTML = `<span>I answered: <b>${text}</b></span><span class="timestamp">${timestamp || ''}</span>`;
+      } else {
+        div.innerHTML = `<span>${text}</span><span class="timestamp">${isThinking ? '' : timestamp}</span>`;
+      }
       messagesDiv.appendChild(div);
     });
     messagesDiv.scrollTop = messagesDiv.scrollHeight;
@@ -164,7 +180,9 @@ window.addEventListener('DOMContentLoaded', function() {
     chatHistoryList.innerHTML = '';
     savedChats.forEach((chat, idx) => {
       const li = document.createElement('li');
-      li.textContent = chat.name;
+      // Use the chat name as the label, fallback to Unnamed Chat
+      let chatLabel = chat.name || 'Unnamed Chat';
+      li.textContent = chatLabel;
       if (activeChatIdx === idx) li.classList.add('active');
       li.onclick = () => {
         chatHistory = chat.history;
