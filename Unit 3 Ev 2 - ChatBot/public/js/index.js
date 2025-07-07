@@ -180,7 +180,7 @@ window.addEventListener('DOMContentLoaded', function() {
     chatHistoryList.innerHTML = '';
     savedChats.forEach((chat, idx) => {
       const li = document.createElement('li');
-      // Use the chat name as the label, fallback to Unnamed Chat
+      // Name the chat or use a default name
       let chatLabel = chat.name || 'Unnamed Chat';
       li.textContent = chatLabel;
       if (activeChatIdx === idx) li.classList.add('active');
@@ -190,25 +190,53 @@ window.addEventListener('DOMContentLoaded', function() {
         renderMessages();
         renderChatHistoryList();
       };
-      // Added a delete icon
+      // Here I add a trash icon to delete the chat
       const del = document.createElement('i');
       del.className = 'fa fa-trash';
       del.title = 'Delete this chat';
       del.onclick = (eventHandler) => {
         eventHandler.stopPropagation();
-        savedChats.splice(idx, 1);
-        localStorage.setItem('golfinSavedChats', JSON.stringify(savedChats));
-        if (activeChatIdx === idx) {
-          activeChatIdx = null;
-          chatHistory = [];
-          saveSession();
-          renderMessages();
-        }
-        renderChatHistoryList();
+        // Here's the modal confirmation
+        showModalWithConfirm('Are you sure you want to delete this chat?', () => {
+          savedChats.splice(idx, 1);
+          localStorage.setItem('golfinSavedChats', JSON.stringify(savedChats));
+          if (activeChatIdx === idx) {
+            activeChatIdx = null;
+            chatHistory = [];
+            saveSession();
+            renderMessages();
+          }
+          renderChatHistoryList();
+        });
       };
       li.appendChild(del);
       chatHistoryList.appendChild(li);
     });
+  }
+
+  // Modal with confirm/cancel buttons
+  function showModalWithConfirm(message, onConfirm) {
+    let modal = document.createElement('div');
+    modal.style.position = 'fixed';
+    modal.style.top = '50%';
+    modal.style.left = '50%';
+    modal.style.transform = 'translate(-50%, -50%)';
+    modal.style.background = '#fff';
+    modal.style.padding = '32px 24px';
+    modal.style.borderRadius = '12px';
+    modal.style.boxShadow = '0 4px 24px rgba(34,77,32,0.18)';
+    modal.style.zIndex = '9999';
+    modal.style.textAlign = 'center';
+    modal.style.fontSize = '1.1rem';
+    modal.innerHTML = `<div style='margin-bottom:16px;'>${message}</div>
+    <button id='confirmModalBtn' style='padding:8px 18px; border-radius:8px; background:#c53030; color:#fff; border:none; font-size:1rem; cursor:pointer; margin-right:12px;'>Delete</button>
+    <button id='cancelModalBtn' style='padding:8px 18px; border-radius:8px; background:#2f855a; color:#fff; border:none; font-size:1rem; cursor:pointer;'>Cancel</button>`;
+    document.body.appendChild(modal);
+    document.getElementById('confirmModalBtn').onclick = () => {
+      modal.remove();
+      if (typeof onConfirm === 'function') onConfirm();
+    };
+    document.getElementById('cancelModalBtn').onclick = () => modal.remove();
   }
 
   saveChatBtn.onclick = () => {
